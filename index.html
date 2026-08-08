@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#b00020">
+  <title>Bombas e Sistemas de Bombeamento | Mackenzie</title>
+  <style>
+    :root {
+      --mackenzie: #c90016;
+      --mackenzie-dark: #8f0015;
+      --wine: #650014;
+      --paper: #fffafa;
+      --ink: #292326;
+      --muted: #73676c;
+      --line: #eadde0;
+      --academic: #f6c8cf;
+      --assessment: #d79aa6;
+      --deadline: #f4d37a;
+      --holiday: #c90016;
+      --content: #fff0f2;
+    }
+
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top right, rgba(201, 0, 22, .10), transparent 32rem),
+        #f5f2f3;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    header {
+      position: relative;
+      overflow: hidden;
+      padding: 34px 22px 38px;
+      color: white;
+      background: linear-gradient(120deg, var(--wine), var(--mackenzie) 68%, #e21d34);
+      box-shadow: 0 8px 30px rgba(101, 0, 20, .24);
+    }
+
+    header::after {
+      content: "M";
+      position: absolute;
+      right: clamp(18px, 8vw, 110px);
+      top: 50%;
+      width: 88px;
+      height: 88px;
+      display: grid;
+      place-items: center;
+      border: 3px solid rgba(255,255,255,.55);
+      border-radius: 50%;
+      color: rgba(255,255,255,.86);
+      font: 800 48px Georgia, serif;
+      transform: translateY(-50%);
+    }
+
+    .header-inner, main { width: min(1460px, calc(100% - 32px)); margin-inline: auto; }
+    .eyebrow { margin: 0 0 7px; font-size: 12px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; }
+    h1 { max-width: calc(100% - 130px); margin: 0; font-size: clamp(24px, 4vw, 42px); line-height: 1.05; }
+    header p:last-child { margin: 9px 0 0; opacity: .88; }
+
+    main { padding: 26px 0 52px; }
+    .toolbar { display: flex; gap: 16px; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+    .legend { display: flex; flex-wrap: wrap; gap: 10px 18px; }
+    .legend span { display: inline-flex; align-items: center; gap: 7px; color: var(--muted); font-size: 12px; font-weight: 650; }
+    .swatch { width: 12px; height: 12px; border-radius: 3px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.08); }
+    .hint { margin: 0; color: var(--muted); font-size: 12px; text-align: right; }
+
+    .calendars { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+    .month { overflow: hidden; border: 1px solid rgba(101,0,20,.08); border-radius: 15px; background: white; box-shadow: 0 8px 24px rgba(66, 25, 33, .08); }
+    .month h2 { margin: 0; padding: 14px 18px; color: white; background: linear-gradient(90deg, var(--mackenzie-dark), var(--mackenzie)); font-size: 19px; }
+    .week, .days { display: grid; grid-template-columns: repeat(7, 1fr); }
+    .week div { padding: 9px 2px; color: var(--muted); background: #fbf6f7; border-bottom: 1px solid var(--line); text-align: center; font-size: 10px; font-weight: 800; }
+    .day { position: relative; min-width: 0; min-height: 112px; padding: 7px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: white; }
+    .day:nth-child(7n) { border-right: 0; }
+    .day.empty, .day.inactive { background: #f6f3f4; color: #b3aaad; }
+    .day.sunday:not(.inactive) { background: #fcf7f8; }
+    .number { display: grid; width: 25px; height: 25px; place-items: center; border-radius: 50%; font-size: 13px; font-weight: 800; }
+    .day.has-content { cursor: pointer; }
+    .day.has-content:hover, .day.has-content:focus-visible { z-index: 1; outline: 2px solid var(--mackenzie); outline-offset: -2px; }
+    .event, .lesson { overflow-wrap: anywhere; margin-top: 5px; padding: 4px 5px; border-radius: 5px; font-size: 9.5px; font-weight: 700; line-height: 1.25; text-align: center; }
+    .event.academico { background: var(--academic); color: #5f1320; }
+    .event.avaliacao { background: var(--assessment); color: #45101a; }
+    .event.prazo { background: var(--deadline); color: #57430e; }
+    .event.nao-letivo { color: white; background: var(--holiday); }
+    .day.non-school .number { color: white; background: var(--mackenzie); }
+    .lesson { border: 1px solid #efbdc5; color: var(--mackenzie-dark); background: var(--content); }
+    .lesson::before { content: "CONTEÚDO"; display: block; margin-bottom: 2px; font-size: 7px; letter-spacing: .08em; }
+    .lesson.lab { border-color: #b98016; background: #fff4ce; color: #664a0b; }
+    .lesson.lab::before { content: "LABORATÓRIO"; }
+
+    .tooltip {
+      position: fixed;
+      z-index: 30;
+      width: min(430px, calc(100vw - 24px));
+      padding: 13px 15px;
+      border-top: 4px solid #ef3348;
+      border-radius: 9px;
+      color: white;
+      background: var(--wine);
+      box-shadow: 0 14px 35px rgba(38, 7, 13, .32);
+      font-size: 12px;
+      line-height: 1.45;
+      pointer-events: none;
+    }
+    .tooltip strong { display: block; margin-bottom: 5px; color: #fff; font-size: 13px; }
+    .tooltip p { margin: 0; }
+    .tooltip ul { margin: 6px 0 0; padding-left: 18px; }
+
+    .modal { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 20px; background: rgba(38, 7, 13, .68); }
+    .dialog { width: min(600px, 100%); max-height: 85vh; overflow: auto; border-top: 7px solid var(--mackenzie); border-radius: 14px; background: white; box-shadow: 0 24px 80px rgba(0,0,0,.35); }
+    .dialog-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 22px 24px 14px; }
+    .dialog h3 { margin: 0; color: var(--mackenzie-dark); font-size: 23px; }
+    .dialog-date { margin: 5px 0 0; color: var(--muted); font-size: 13px; text-transform: capitalize; }
+    .close { width: 36px; height: 36px; border: 0; border-radius: 50%; color: var(--mackenzie-dark); background: #fff0f2; cursor: pointer; font-size: 25px; }
+    .dialog-body { padding: 0 24px 25px; line-height: 1.55; }
+    .dialog-body ul { padding-left: 20px; }
+    .dialog-body li + li { margin-top: 8px; }
+
+    footer { margin-top: 26px; color: var(--muted); text-align: center; font-size: 12px; }
+
+    @media (max-width: 900px) { .calendars { grid-template-columns: 1fr; } }
+    @media (max-width: 600px) {
+      .header-inner, main { width: min(100% - 20px, 1460px); }
+      header { padding-inline: 10px; }
+      header::after { display: none; }
+      h1 { max-width: none; }
+      .toolbar { align-items: flex-start; flex-direction: column; }
+      .hint { text-align: left; }
+      .week, .days {
+        grid-template-columns:
+          minmax(25px, .42fr)
+          minmax(25px, .42fr)
+          minmax(82px, 1.55fr)
+          minmax(25px, .42fr)
+          minmax(25px, .42fr)
+          minmax(82px, 1.55fr)
+          minmax(25px, .42fr);
+      }
+      .week div { padding-inline: 0; font-size: 8px; }
+      .day { min-height: 92px; padding: 4px; }
+      .event, .lesson { padding-inline: 3px; font-size: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <p class="eyebrow">Universidade Presbiteriana Mackenzie</p>
+      <h1>Bombas e Sistemas de Bombeamento</h1>
+      <p>Calendário interativo · 2º semestre de 2026</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="toolbar" aria-label="Legenda do calendário">
+      <div class="legend">
+        <span><i class="swatch" style="background:var(--academic)"></i>Atividade acadêmica</span>
+        <span><i class="swatch" style="background:var(--assessment)"></i>Avaliação</span>
+        <span><i class="swatch" style="background:var(--deadline)"></i>Prazo</span>
+        <span><i class="swatch" style="background:var(--holiday)"></i>Feriado / não letivo</span>
+        <span><i class="swatch" style="background:var(--content)"></i>Conteúdo da aula</span>
+        <span><i class="swatch" style="background:#fff4ce"></i>Laboratório disponível</span>
+      </div>
+      <p class="hint">Clique em uma aula para ver os detalhes.</p>
+    </section>
+    <section class="calendars" id="calendars" aria-label="Calendário acadêmico"></section>
+    <footer>Calendário da disciplina · Mackenzie · 2026/2</footer>
+  </main>
+
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+    <article class="dialog">
+      <div class="dialog-head">
+        <div><h3 id="modal-title"></h3><p class="dialog-date" id="modal-date"></p></div>
+        <button class="close" id="close" type="button" aria-label="Fechar">×</button>
+      </div>
+      <div class="dialog-body" id="modal-body"></div>
+    </article>
+  </div>
+  <div class="tooltip" id="tooltip" role="tooltip" hidden></div>
+
+  <script src="conteudos.js"></script>
+  <script>
+    const YEAR = 2026;
+    const START = "2026-08-10";
+    const END = "2026-12-19";
+    const months = [
+      { index: 7, name: "Agosto" }, { index: 8, name: "Setembro" },
+      { index: 9, name: "Outubro" }, { index: 10, name: "Novembro" },
+      { index: 11, name: "Dezembro" }
+    ];
+    const events = [
+      ["2026-08-10","2026-08-10","Início das aulas","academico",false],
+      ["2026-08-31","2026-09-04","Semana da Escola de Engenharia","academico",true],
+      ["2026-09-07","2026-09-07","Feriado Nacional","nao-letivo"],
+      ["2026-09-17","2026-09-17","Prova AVI","avaliacao",true],
+      ["2026-10-03","2026-10-03","Limite-N1","prazo"],
+      ["2026-10-12","2026-10-12","Feriado Nacional","nao-letivo"],
+      ["2026-10-13","2026-10-13","Dia do Professor (Antecipado)","nao-letivo"],
+      ["2026-11-02","2026-11-02","Feriado Nacional","nao-letivo"],
+      ["2026-11-04","2026-11-04","Prova Avalia","avaliacao",true],
+      ["2026-11-15","2026-11-15","Feriado Nacional","nao-letivo"],
+      ["2026-11-20","2026-11-20","Feriado Nacional","nao-letivo"],
+      ["2026-11-21","2026-11-21","Ponte de feriado","nao-letivo"],
+      ["2026-11-28","2026-11-28","Limite-N2","prazo"],
+      ["2026-12-01","2026-12-01","Prazo máx. para trancamento","prazo"],
+      ["2026-11-30","2026-12-05","SUB","avaliacao",true],
+      ["2026-12-07","2026-12-12","PAFE","avaliacao",true],
+      ["2026-12-12","2026-12-12","Lançamento de notas finais","prazo"],
+      ["2026-12-19","2026-12-19","Término das atividades · Recesso","nao-letivo"]
+    ].map(([start,end,text,type,blocksLesson = false]) => ({ start,end,text,type,blocksLesson }));
+    const lessons = window.conteudosAulas || {};
+    const calendars = document.getElementById("calendars");
+    const modal = document.getElementById("modal");
+    const tooltip = document.getElementById("tooltip");
+
+    function iso(month, day) { return `${YEAR}-${String(month + 1).padStart(2,"0")}-${String(day).padStart(2,"0")}`; }
+    function eventsOn(date) { return events.filter(event => date >= event.start && date <= event.end); }
+
+    function fillLessonDetails(container, lesson, compact = false) {
+      container.replaceChildren();
+      if (compact) { const title = document.createElement("strong"); title.textContent = lesson.titulo || "Conteúdo da aula"; container.appendChild(title); }
+      if (lesson.resumo || lesson.conteudo) { const p = document.createElement("p"); p.textContent = lesson.resumo || lesson.conteudo; container.appendChild(p); }
+      if (lesson.itens?.length) {
+        const ul = document.createElement("ul");
+        lesson.itens.forEach(item => { const li = document.createElement("li"); li.textContent = [item.topico || item.conteudo, item.referencia || item.pagina].filter(Boolean).join(" · "); ul.appendChild(li); });
+        container.appendChild(ul);
+      }
+    }
+
+    function showTooltip(target, lesson) {
+      fillLessonDetails(tooltip, lesson, true);
+      tooltip.hidden = false;
+      const margin = 12, gap = 8, box = target.getBoundingClientRect();
+      let left = box.left + (box.width - tooltip.offsetWidth) / 2;
+      left = Math.max(margin, Math.min(left, window.innerWidth - tooltip.offsetWidth - margin));
+      let top = box.bottom + gap;
+      if (top + tooltip.offsetHeight > window.innerHeight - margin) top = box.top - tooltip.offsetHeight - gap;
+      tooltip.style.left = `${left}px`;
+      tooltip.style.top = `${Math.max(margin, top)}px`;
+    }
+
+    function hideTooltip() { tooltip.hidden = true; }
+
+    function openLesson(date) {
+      const lesson = lessons[date];
+      if (!lesson) return;
+      document.getElementById("modal-title").textContent = lesson.titulo || "Conteúdo da aula";
+      document.getElementById("modal-date").textContent = new Intl.DateTimeFormat("pt-BR", { dateStyle: "long", timeZone: "UTC" }).format(new Date(`${date}T12:00:00Z`));
+      const body = document.getElementById("modal-body");
+      fillLessonDetails(body, lesson);
+      modal.hidden = false;
+      document.getElementById("close").focus();
+    }
+
+    function makeMonth(month) {
+      const card = document.createElement("article"); card.className = "month";
+      const title = document.createElement("h2"); title.textContent = `${month.name} ${YEAR}`; card.appendChild(title);
+      const week = document.createElement("div"); week.className = "week";
+      ["DOM","SEG","TER","QUA","QUI","SEX","SÁB"].forEach(label => { const el = document.createElement("div"); el.textContent = label; week.appendChild(el); }); card.appendChild(week);
+      const grid = document.createElement("div"); grid.className = "days";
+      const first = new Date(YEAR, month.index, 1).getDay();
+      const count = new Date(YEAR, month.index + 1, 0).getDate();
+      for (let i = 0; i < first; i++) { const empty = document.createElement("div"); empty.className = "day empty"; grid.appendChild(empty); }
+      for (let day = 1; day <= count; day++) {
+        const date = iso(month.index, day); const current = new Date(YEAR, month.index, day);
+        const cell = document.createElement("div"); cell.className = "day"; cell.dataset.date = date;
+        if (date < START || date > END) cell.classList.add("inactive");
+        if (current.getDay() === 0) cell.classList.add("sunday");
+        const number = document.createElement("span"); number.className = "number"; number.textContent = day; cell.appendChild(number);
+        const dayEvents = eventsOn(date);
+        dayEvents.forEach(event => { const block = document.createElement("div"); block.className = `event ${event.type}`; block.textContent = event.text; cell.appendChild(block); if (event.type === "nao-letivo") cell.classList.add("non-school"); });
+        const lessonBlocked = dayEvents.some(event => event.blocksLesson || event.type === "nao-letivo");
+        if (lessons[date] && !lessonBlocked) {
+          const lesson = document.createElement("div"); lesson.className = "lesson"; if (lessons[date].laboratorio) lesson.classList.add("lab"); lesson.textContent = lessons[date].titulo || "Ver conteúdo"; cell.appendChild(lesson);
+          cell.classList.add("has-content"); cell.tabIndex = 0; cell.setAttribute("role","button"); cell.setAttribute("aria-label", `Abrir conteúdo de ${day} de ${month.name}`);
+          cell.setAttribute("aria-describedby", "tooltip");
+          cell.addEventListener("mouseenter", () => showTooltip(cell, lessons[date]));
+          cell.addEventListener("mouseleave", hideTooltip);
+          cell.addEventListener("focus", () => showTooltip(cell, lessons[date]));
+          cell.addEventListener("blur", hideTooltip);
+          cell.addEventListener("click", () => { hideTooltip(); openLesson(date); });
+          cell.addEventListener("keydown", event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); hideTooltip(); openLesson(date); } });
+        }
+        grid.appendChild(cell);
+      }
+      card.appendChild(grid); return card;
+    }
+
+    months.forEach(month => calendars.appendChild(makeMonth(month)));
+    document.getElementById("close").addEventListener("click", () => modal.hidden = true);
+    modal.addEventListener("click", event => { if (event.target === modal) modal.hidden = true; });
+    document.addEventListener("keydown", event => { if (event.key === "Escape") modal.hidden = true; });
+  </script>
+</body>
+</html>
