@@ -85,10 +85,10 @@ window.conteudosAulas = {
       { topico: "6.3 - Associação de bombas em paralelo", referencia: "p. 139" }
     ]
   },
-  "2026-10-27": { titulo: "Exercícios", resumo: "Exercícios sobre associação de bombas." },
+  "2026-10-27": { titulo: "AA3 - Prova", resumo: "Terceira atividade avaliativa da disciplina." },
   "2026-10-30": { titulo: "Experimento: série e paralelo", resumo: "Experimento de laboratório com bombas em série e em paralelo.", laboratorio: true },
 
-  "2026-11-03": { titulo: "AA3 - Prova", resumo: "Terceira atividade avaliativa da disciplina." },
+  "2026-11-03": { titulo: "Exercícios", resumo: "Exercícios sobre associação de bombas." },
   "2026-11-06": {
     titulo: "Cavitação",
     itens: [

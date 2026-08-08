@@ -69,6 +69,8 @@
     .legend span { display: inline-flex; align-items: center; gap: 7px; color: var(--muted); font-size: 12px; font-weight: 650; }
     .swatch { width: 12px; height: 12px; border-radius: 3px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.08); }
     .hint { margin: 0; color: var(--muted); font-size: 12px; text-align: right; }
+    .pdf-link { display: inline-flex; align-items: center; justify-content: center; min-height: 40px; padding: 8px 13px; border: 1px solid var(--mackenzie); border-radius: 8px; color: var(--mackenzie-dark); background: white; font-size: 12px; font-weight: 750; text-decoration: none; }
+    .pdf-link:hover, .pdf-link:focus-visible { color: white; background: var(--mackenzie); outline: none; }
 
     .calendars { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
     .month { overflow: hidden; border: 1px solid rgba(101,0,20,.08); border-radius: 15px; background: white; box-shadow: 0 8px 24px rgba(66, 25, 33, .08); }
@@ -168,7 +170,7 @@
         <span><i class="swatch" style="background:var(--content)"></i>Conteúdo da aula</span>
         <span><i class="swatch" style="background:#fff4ce"></i>Laboratório disponível</span>
       </div>
-      <p class="hint">Clique em uma aula para ver os detalhes.</p>
+      <div><p class="hint">Clique em uma aula para ver os detalhes.</p><a class="pdf-link" href="output/pdf/BOMBAS-SB-cronograma-2026-2.pdf" target="_blank" rel="noopener">↓ Versão impressa em PDF</a></div>
     </section>
     <section class="calendars" id="calendars" aria-label="Calendário acadêmico"></section>
     <footer>Calendário da disciplina · Mackenzie · 2026/2</footer>
